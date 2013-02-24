@@ -1,5 +1,6 @@
 class MyPlayerInput extends PlayerInput;
 
+
 function Debug(string message)
 {
 	local MyCube cube;
@@ -24,7 +25,16 @@ event PlayerInput(float DeltaTime)
 		cube = MyPlayerController(pc).CurrentCube;
 		if (cube != None)
 		{
-			speedFactor = 50.0 * DeltaTime;
+			speedFactor = pc.cubeSpeedFactor * DeltaTime;
+
+			if (PressedKeys.Find('+') >= 0)
+			{
+				pc.cubeSpeedFactor += 0.5;
+			}
+			if (PressedKeys.Find('-') >= 0)
+			{
+				pc.cubeSpeedFactor -= 0.5;
+			}
 
 			if (PressedKeys.Find('W') >= 0)
 			{

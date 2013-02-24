@@ -1,6 +1,14 @@
 class MyPlayerController extends SimplePC;
 
 var MyCube CurrentCube;
+var float cubeSpeedFactor;
+
+simulated event PostBeginPlay()
+{
+	super.PostBeginPlay();
+
+	cubeSpeedFactor = 50.0;
+}
 
 state() Building
 {
