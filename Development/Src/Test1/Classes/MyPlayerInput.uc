@@ -1,10 +1,9 @@
 class MyPlayerInput extends PlayerInput;
 
-
 function Debug(string message)
 {
 	local MyCube cube;
-	cube = MyPlayerController(GetALocalPlayerController()).CurrentCube;
+	cube = MyPlayerController(Outer).CurrentCube;
 
 	cube.Debug(message);
 }
@@ -16,24 +15,23 @@ event PlayerInput(float DeltaTime)
 	local float speedFactor;
 
 	local MyCube cube;
-	local PlayerController pc;
 
-	pc = GetALocalPlayerController();
-
-	if (pc.IsInState('Building') || pc.GetStateName() == 'Building')
+	if (MyPlayerController(Outer).IsInState('Building') || MyPlayerController(Outer).GetStateName() == 'Building')
 	{
-		cube = MyPlayerController(pc).CurrentCube;
+		cube = MyPlayerController(Outer).CurrentCube;
 		if (cube != None)
 		{
-			speedFactor = pc.cubeSpeedFactor * DeltaTime;
+			speedFactor = MyPlayerController(Outer).cubeSpeedFactor * DeltaTime;
 
-			if (PressedKeys.Find('+') >= 0)
+			if (PressedKeys.Find('Add') >= 0)
 			{
-				pc.cubeSpeedFactor += 0.5;
+				MyPlayerController(Outer).cubeSpeedFactor += 0.5;
+				Debug("cubeSpeedFactor: "$MyPlayerController(Outer).cubeSpeedFactor);
 			}
-			if (PressedKeys.Find('-') >= 0)
+			if (PressedKeys.Find('Subtract') >= 0)
 			{
-				pc.cubeSpeedFactor -= 0.5;
+				MyPlayerController(Outer).cubeSpeedFactor -= 0.5;
+				Debug("cubeSpeedFactor: "$MyPlayerController(Outer).cubeSpeedFactor);
 			}
 
 			if (PressedKeys.Find('W') >= 0)
@@ -100,11 +98,11 @@ event PlayerInput(float DeltaTime)
 	local float FOVScale, TimeScale;
 
 	local MyCube cube;
-	local PlayerController pc;
+	local MyPlayerController pc;
 
 	local float mouseTurn, mouseUp;
 
-	pc = GetALocalPlayerController();
+	pc = MyPlayerController(Outer);
 	speedFactor = 50.0 * DeltaTime;
 
 	if (pc.IsInState('Building') || pc.GetStateName() == 'Building')

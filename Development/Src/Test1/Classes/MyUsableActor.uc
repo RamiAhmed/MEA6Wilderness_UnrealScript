@@ -49,8 +49,8 @@ function bool UsedBy(Pawn User)
 	{
 		// If it matters, you might want to double check here that the user is a player-controlled pawn.
 		//PlaySound(SoundCue'ImportTest.A_Use_Cue'); // Put your own sound cue here. And ideally, don't directly reference assets in code.
-		`Log("UsedBy called and IsInInteractionRange returned true. This is where we would've played a sound!");
-		WorldInfo.Game.Broadcast(self, "UsedBy called and IsInInteractionRange is true.");
+		//`Log("UsedBy called and IsInInteractionRange returned true. This is where we would've played a sound!");
+		//WorldInfo.Game.Broadcast(self, "UsedBy called and IsInInteractionRange is true.");
 		
 		ProcessUsedBy(User);
 

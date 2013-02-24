@@ -9,7 +9,23 @@ simulated event PostBeginPlay()
 
 	cubeSpeedFactor = 50.0;
 }
+/**
+event InitInputSystem()
+{
+	if (PlayerInput == None)
+	{
+		Assert(InputClass != None);
+		PlayerInput = new(Self) InputClass;
 
+		if (PlayerInput != none)
+		{
+			PlayerInput.InitInputSystem();
+		}
+	}
+
+	//super.InitInputSystem();
+}
+**/
 state() Building
 {
 	//ignores ProcessMove;

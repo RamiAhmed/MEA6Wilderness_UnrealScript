@@ -63,15 +63,19 @@ function initCubeLocation()
 {
 	local PlayerController player;
 	local Pawn pawn;
+	local rotator playerRotation;
+
 	local float distance;	
 	local vector newLoc;
 
 	distance = 150.0;
 
 	player = GetALocalPlayerController();
+	playerRotation = player.PlayerCamera.ViewTarget.POV.Rotation;
 	pawn = player.Pawn;
 
-	newLoc = pawn.Location + (normal(Vector(pawn.Rotation)) * distance);
+	//newLoc = pawn.Location + (normal(Vector(pawn.Rotation)) * distance);
+	newLoc = pawn.Location + (normal(Vector(playerRotation)) * distance);
 
 	self.setLocation(newLoc);
 }
