@@ -8,6 +8,71 @@ function Debug(string message)
 	cube.Debug(message);
 }
 
+// INTERFACE 2
+// MouseXY = cube XYZ
+// arrowkeys = Cube Pitch/Roll
+event PlayerInput(float DeltaTime)
+{
+	local Rotator cubeRotation;
+	local vector cubePosition;
+	local float speedFactor;
+
+	local MyCube cube;	
+	if (MyPlayerController(Outer).IsInState('Building') || MyPlayerController(Outer).GetStateName() == 'Building')
+	{
+		cube = MyPlayerController(Outer).CurrentCube;
+		if (cube != None)
+		{
+			speedFactor = MyPlayerController(Outer).cubeSpeedFactor * DeltaTime;
+
+			if (PressedKeys.Find('Add') >= 0)
+			{
+				MyPlayerController(Outer).cubeSpeedFactor += 0.5;
+				Debug("cubeSpeedFactor: "$MyPlayerController(Outer).cubeSpeedFactor);
+			}
+			if (PressedKeys.Find('Subtract') >= 0)
+			{
+				MyPlayerController(Outer).cubeSpeedFactor -= 0.5;
+				Debug("cubeSpeedFactor: "$MyPlayerController(Outer).cubeSpeedFactor);
+			}	
+
+			if (PressedKeys.Find('Up') >= 0)
+			{
+				Debug("Up");
+				cubeRotation.Pitch -= speedFactor * DegToUnrRot;
+			}
+			if (PressedKeys.Find('Down') >= 0)
+			{
+				Debug("Down");
+				cubeRotation.Pitch += speedFactor * DegToUnrRot;
+			}
+			if (PressedKeys.Find('Right') >= 0)
+			{
+				Debug("Right");
+				cubeRotation.Roll += speedFactor * DegToUnrRot;
+			}
+			if (PressedKeys.Find('Left') >= 0)
+			{
+				Debug("Left");
+				cubeRotation.Roll -= speedFactor * DegToUnrRot;
+			}
+
+			cube.cubeRotModifier = cubeRotation;	
+
+			cube.cubePosModifier.y = 5.0;	
+		}
+	}
+	else
+	{
+		super.PlayerInput(DeltaTime);
+	}
+}
+
+/*
+// INTERFACE 1 
+// WASD = CubeXY
+// arrowkeys = cube Pitch/Roll
+// No pawn movement
 event PlayerInput(float DeltaTime)
 {
 	local Rotator cubeRotation;
@@ -87,6 +152,8 @@ event PlayerInput(float DeltaTime)
 	}
 
 }
+*/
+
 
 /*
 event PlayerInput(float DeltaTime)

@@ -11,27 +11,36 @@ function Debug(string message)
 event Tick(float DeltaTime)
 {
 	local PlayerController pc;
-	pc = GetALocalPlayerController();
 
-	if ((pc.IsInState('Building') || pc.GetStateName() == 'Building') ||
-		(IsInState('BuilderMode') || GetStateName() == 'BuilderMode'))
+	if (!(self.IsInState('BuilderMode') || self.GetStateName() == 'BuilderMode'))
 	{
-		if (MyPlayerController(pc).CurrentCube == None) 
-		{
-			MyPlayerController(pc).CurrentCube = self;
-		}
-		UpdateCubeLocation();
+		super.Tick(DeltaTime);
 	}
 	else 
 	{
-		Debug("Send Cube to Idle state");
-		GotoState('Idle');
+		pc = GetALocalPlayerController();
+
+		if ((pc.IsInState('Building') || pc.GetStateName() == 'Building') ||
+			(IsInState('BuilderMode') || GetStateName() == 'BuilderMode'))
+		{
+			if (MyPlayerController(pc).CurrentCube == None) 
+			{
+				MyPlayerController(pc).CurrentCube = self;
+			}
+			
+			UpdateCubeLocation();
+		}
+		else 
+		{
+			Debug("Send Cube to Idle state");
+			GotoState('Idle');
+		}
 	}
 }
 
 auto state Idle
 {
-	ignores Tick;
+	//ignores Tick;
 
 	function ProcessUsedBy(Pawn User)
 	{
@@ -40,7 +49,7 @@ auto state Idle
 
 Begin:
 	Debug("Cube entered Idle state");
-	SetPhysics(PHYS_Falling);
+	SetPhysics(PHYS_RigidBody);
 	cubePosModifier = vect(0,0,0);
 	cubeRotModifier = rotator(vect(0,0,0));
 }
@@ -128,4 +137,5 @@ defaultproperties
 	//cubeRotModifier=vect(0,0,0)
 
 	bStatic=false
+	UseSimpleRigidBodyCollision=true
 }
