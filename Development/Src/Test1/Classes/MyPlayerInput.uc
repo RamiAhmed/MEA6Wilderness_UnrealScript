@@ -14,7 +14,7 @@ function Debug(string message)
 event PlayerInput(float DeltaTime)
 {
 	local Rotator cubeRotation;
-	local vector cubePosition;
+//	local vector cubePosition;
 	local float speedFactor;
 
 	local MyCube cube;	

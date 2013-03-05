@@ -67,7 +67,8 @@ function ProcessUsedBy(Pawn User)
 DefaultProperties
 {
 	Begin Object Name=Sprite
-		HiddenGame=true HiddenEditor=true
+		HiddenGame=true 
+		HiddenEditor=true
 	End Object
 
 	Begin Object Class=StaticMeshComponent Name=MyMesh

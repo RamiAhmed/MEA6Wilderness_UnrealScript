@@ -49,7 +49,7 @@ auto state Idle
 
 Begin:
 	Debug("Cube entered Idle state");
-	SetPhysics(PHYS_RigidBody);
+	SetPhysics(PHYS_Falling);
 	cubePosModifier = vect(0,0,0);
 	cubeRotModifier = rotator(vect(0,0,0));
 }
@@ -77,7 +77,7 @@ function initCubeLocation()
 	local float distance;	
 	local vector newLoc;
 
-	distance = 150.0;
+	distance = 50.0;
 
 	player = GetALocalPlayerController();
 	playerRotation = player.PlayerCamera.ViewTarget.POV.Rotation;
@@ -97,7 +97,7 @@ function UpdateCubeLocation()
 	local vector newLoc;
 	//local float distance;
 
-	//distance = 150.0;
+	//distance = 50.0;
 
 	player = GetALocalPlayerController();
 	//pawn = player.Pawn;
@@ -111,7 +111,6 @@ function UpdateCubeLocation()
 	//self.SetLocation(newLoc);
 	//self.Move(newLoc);
 	self.MoveSmooth(newLoc);*/
-	//self.MoveSmooth(self.Location + (vect(newLoc.x, newLoc.y, newLoc.z) >> Rotation) );
 
 	local PlayerController player;
 	local rotator playerRotation;
@@ -119,9 +118,10 @@ function UpdateCubeLocation()
 	player = GetALocalPlayerController();
 	playerRotation = player.PlayerCamera.ViewTarget.POV.Rotation;
 
-	cubePosModifier = TransformVectorByRotation(playerRotation, cubePosModifier);
+	//cubePosModifier = TransformVectorByRotation(playerRotation, cubePosModifier);
+	self.MoveSmooth(normal(Vector(playerRotation)) * 50.0);
 
-	self.MoveSmooth(cubePosModifier);
+	//self.MoveSmooth(cubePosModifier);
 
 	self.SetRotation(self.Rotation + cubeRotModifier);
 }
@@ -129,7 +129,7 @@ function UpdateCubeLocation()
 defaultproperties
 {
 	Begin Object Class=DynamicLightEnvironmentComponent Name=LightEnvironmentComp
-	    bEnabled = true
+	    bEnabled=true
 	End Object    
 	Components.add(LightEnvironmentComp)
 
@@ -137,5 +137,5 @@ defaultproperties
 	//cubeRotModifier=vect(0,0,0)
 
 	bStatic=false
-	UseSimpleRigidBodyCollision=true
+//	UseSimpleRigidBodyCollision=true
 }
