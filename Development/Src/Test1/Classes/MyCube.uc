@@ -10,7 +10,8 @@ function Debug(string message)
 
 event Tick(float DeltaTime)
 {
-	local PlayerController pc;
+	local MyPlayerController pc;
+	pc = MyPlayerController(GetALocalPlayerController());
 
 	if (!(self.IsInState('BuilderMode') || self.GetStateName() == 'BuilderMode'))
 	{
@@ -18,14 +19,14 @@ event Tick(float DeltaTime)
 	}
 	else 
 	{
-		pc = GetALocalPlayerController();
+//		pc = GetALocalPlayerController();
 
 		if ((pc.IsInState('Building') || pc.GetStateName() == 'Building') ||
 			(IsInState('BuilderMode') || GetStateName() == 'BuilderMode'))
 		{
-			if (MyPlayerController(pc).CurrentCube == None) 
+			if (pc.CurrentCube == None) 
 			{
-				MyPlayerController(pc).CurrentCube = self;
+				pc.CurrentCube = self;
 			}
 			
 			UpdateCubeLocation();
@@ -40,8 +41,6 @@ event Tick(float DeltaTime)
 
 auto state Idle
 {
-	//ignores Tick;
-
 	function ProcessUsedBy(Pawn User)
 	{
 		GotoState('BuilderMode');
@@ -49,12 +48,13 @@ auto state Idle
 
 Begin:
 	Debug("Cube entered Idle state");
+	GetALocalPlayerController().GotoState('Idle');
 	SetPhysics(PHYS_Falling);
 	cubePosModifier = vect(0,0,0);
 	cubeRotModifier = rotator(vect(0,0,0));
 }
 
-state() BuilderMode
+state BuilderMode
 {
 	function ProcessUsedBy(Pawn User)
 	{
@@ -77,51 +77,34 @@ function initCubeLocation()
 	local float distance;	
 	local vector newLoc;
 
-	distance = 50.0;
+	distance = 100.0;
 
 	player = GetALocalPlayerController();
 	playerRotation = player.PlayerCamera.ViewTarget.POV.Rotation;
 	pawn = player.Pawn;
 
-	//newLoc = pawn.Location + (normal(Vector(pawn.Rotation)) * distance);
 	newLoc = pawn.Location + (normal(Vector(playerRotation)) * distance);
 
 	self.setLocation(newLoc);
 }
 
 function UpdateCubeLocation()
-{/*
-	local PlayerController player;
-	//local Pawn pawn;
+{
+	local MyPlayerController pc;
 	local rotator playerRotation;
 	local vector newLoc;
-	//local float distance;
 
-	//distance = 50.0;
+	pc = MyPlayerController(GetALocalPlayerController());
+	playerRotation = pc.PlayerCamera.ViewTarget.POV.Rotation;
 
-	player = GetALocalPlayerController();
-	//pawn = player.Pawn;
-
-	//newLoc = pawn.Location + (normal(Vector(pawn.Rotation)) * distance);
-	//newLoc = (normal(Vector(pawn.Rotation)) * distance);
-
-	playerRotation = player.PlayerCamera.ViewTarget.POV.Rotation;
-	newLoc = self.Location + TransformVectorByRotation(playerRotation, cubePosModifier);
-
-	//self.SetLocation(newLoc);
-	//self.Move(newLoc);
-	self.MoveSmooth(newLoc);*/
-
-	local PlayerController player;
-	local rotator playerRotation;
-
-	player = GetALocalPlayerController();
-	playerRotation = player.PlayerCamera.ViewTarget.POV.Rotation;
-
-	//cubePosModifier = TransformVectorByRotation(playerRotation, cubePosModifier);
-	self.MoveSmooth(normal(Vector(playerRotation)) * 50.0);
-
-	//self.MoveSmooth(cubePosModifier);
+	if (IsZero(cubePosModifier)) {
+		newLoc = pc.Pawn.Location + Vector(playerRotation) * 100.0;
+		self.SetLocation(newLoc);
+	}
+	else {
+		cubePosModifier = TransformVectorByRotation(playerRotation, cubePosModifier);
+		self.MoveSmooth(cubePosModifier);
+	}
 
 	self.SetRotation(self.Rotation + cubeRotModifier);
 }
@@ -133,9 +116,5 @@ defaultproperties
 	End Object    
 	Components.add(LightEnvironmentComp)
 
-	//cubePosModifier=vect(0,0,0)
-	//cubeRotModifier=vect(0,0,0)
-
 	bStatic=false
-//	UseSimpleRigidBodyCollision=true
 }

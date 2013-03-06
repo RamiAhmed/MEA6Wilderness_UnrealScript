@@ -1,6 +1,6 @@
 class MyUsableActor extends Trigger Placeable;
 
-var() const string Prompt;
+//var() const string Prompt;
 var bool IsInInteractionRange;
 
 event Touch(Actor Other, PrimitiveComponent OtherComp, Vector HitLocation, Vector HitNormal)
@@ -10,7 +10,7 @@ event Touch(Actor Other, PrimitiveComponent OtherComp, Vector HitLocation, Vecto
 	if (Pawn(Other) != none) 
 	{
 		// Ideally, we should also check that the touching pawn is a player-controlled one
-		PlayerController(Pawn(Other).Controller).myHUD.AddPostRenderedActor(self);
+//		PlayerController(Pawn(Other).Controller).myHUD.AddPostRenderedActor(self);
 		IsInInteractionRange = true;
 	}
 }
@@ -21,11 +21,11 @@ event UnTouch(Actor Other)
 
 	if (Pawn(Other) != none) 
 	{
-		PlayerController(Pawn(Other).Controller).myHUD.RemovePostRenderedActor(self);
+//		PlayerController(Pawn(Other).Controller).myHUD.RemovePostRenderedActor(self);
 		IsInInteractionRange = false;
 	}
 }
-
+/*
 simulated event PostRenderFor(PlayerController PC, Canvas Canvas, Vector CameraPosition, Vector CameraDir)
 {
 	local Font previous_font;
@@ -38,7 +38,7 @@ simulated event PostRenderFor(PlayerController PC, Canvas Canvas, Vector CameraP
 	Canvas.DrawText(Prompt); // Prompt is a string variable defined in our new actor's class.
 	Canvas.Font = previous_font;
 }
-
+*/
 function bool UsedBy(Pawn User) 
 {
 	local bool used;

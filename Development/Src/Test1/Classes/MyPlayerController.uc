@@ -3,27 +3,50 @@ class MyPlayerController extends SimplePC;
 var MyCube CurrentCube;
 var float cubeSpeedFactor;
 
+enum EBuilderInterfaceType
+{
+	BUILD_0,
+	BUILD_1,
+	BUILD_2,
+	BUILD_3
+};
+
+var EBuilderInterfaceType CurrentInterface;
+
+function Debug(string message)
+{
+	WorldInfo.Game.Broadcast(self, "DEBUG: "$message);
+}
+
 simulated event PostBeginPlay()
 {
 	super.PostBeginPlay();
 
 	cubeSpeedFactor = 50.0;
+	CurrentInterface = BUILD_0;
 }
 
-state() Building
+state Idle extends PlayerWalking
 {
-	//ignores ProcessMove;
+Begin:
+	Debug("PC entered Idle state");
+	//Pawn.ZeroMovementVariables();
+	Pawn.MovementSpeedModifier += 0.5;
+}
 
+state Building
+{
 	exec function Use()
 	{
 		CurrentCube.GotoState('Idle');
-		GotoState('PlayerWalking');
+		GotoState('Idle');
 		CurrentCube = None;
 	}
 
 Begin:
-	WorldInfo.Game.Broadcast(self, "PC entered Building state");
-	Pawn.ZeroMovementVariables();
+	Debug("PC entered Building state");
+	//Pawn.ZeroMovementVariables();
+	Pawn.MovementSpeedModifier -= 0.5;
 }
 
 function GetTriggerUseList(float interactDistanceToCheck, float crosshairDist, float minDot, bool bUsuableOnly, out array<Trigger> out_useList)
