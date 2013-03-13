@@ -21,5 +21,5 @@ defaultproperties
 {
 	max_force=5000.0
 	max_speed=15.0
-	pursue_parameter=1.0
+	pursue_parameter=1000.0
 }

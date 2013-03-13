@@ -1,4 +1,4 @@
-class MyPlayerController extends SimplePC;
+class MyPlayerController extends UDKPlayerController;//SimplePC;
 
 var MyCube CurrentCube;
 var float cubeSpeedFactor;
@@ -8,7 +8,9 @@ enum EBuilderInterfaceType
 	BUILD_0,
 	BUILD_1,
 	BUILD_2,
-	BUILD_3
+	BUILD_3,
+	BUILD_4,
+	BUILD_5
 };
 
 var EBuilderInterfaceType CurrentInterface;
@@ -26,7 +28,7 @@ simulated event PostBeginPlay()
 	CurrentInterface = BUILD_0;
 }
 
-state Idle extends PlayerWalking
+auto state Idle extends PlayerWalking
 {
 Begin:
 	Debug("PC entered Idle state");
@@ -47,6 +49,11 @@ Begin:
 	Debug("PC entered Building state");
 	//Pawn.ZeroMovementVariables();
 	Pawn.MovementSpeedModifier -= 0.5;
+}
+
+function bool GetIsInBuildingState()
+{
+	return self.IsInState('Building');
 }
 
 function GetTriggerUseList(float interactDistanceToCheck, float crosshairDist, float minDot, bool bUsuableOnly, out array<Trigger> out_useList)
@@ -99,7 +106,7 @@ function GetTriggerUseList(float interactDistanceToCheck, float crosshairDist, f
 
 defaultproperties
 {
-	InputClass=class'MyPlayerInput'
+	InputClass=class'Test1.MyPlayerInput'
 
 	Name="Default__MyPlayerController"
 }

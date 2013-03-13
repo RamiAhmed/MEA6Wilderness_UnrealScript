@@ -1,127 +1,142 @@
-class MyPlayerInput extends PlayerInput;
+class MyPlayerInput extends UDKPlayerInput within MyPlayerController;
 
-function Debug(string message)
+var float mouseX, mouseY;
+
+function bool InputAxis(int ControllerId, name Key, float Delta, float DeltaTime, optional bool bGamepad)
 {
-	local MyPlayerController pc;
-	pc = MyPlayerController(Outer);
-
-	pc.Debug(message);
+	switch(Key)
+	{
+		case 'MouseX':
+			mouseX += Delta;
+			break;
+		case 'MouseY':
+			mouseY += Delta;
+			break;
+	}
+	return false;
 }
 
 event PlayerInput(float DeltaTime)
 {
+	super.PlayerInput(DeltaTime);
+}
+
+event Tick(float DeltaTime)
+{
 	local float speedFactor;
-	local MyCube cube;
-	local EBuilderInterfaceType currentInterface;
-	local MyPlayerController pc;
-	pc = MyPlayerController(Outer);
 
-	changeInterface(pc);
+	super.Tick(DeltaTime);
 
-	if (pc.IsInState('Building') || pc.GetStateName() == 'Building')
+	changeInterface();
+
+	if (GetIsInBuildingState())
 	{
-		cube = pc.CurrentCube;
-		currentInterface = pc.CurrentInterface;
-		if (cube != None && currentInterface >= 0)
+		if (CurrentCube != None && CurrentInterface >= 0)
 		{
-			speedFactor = pc.cubeSpeedFactor * DeltaTime;
+			speedFactor = cubeSpeedFactor * DeltaTime;
 
-			adjustCubeSpeed(pc);
+			adjustCubeSpeed();
 
-			switch (currentInterface)
+			switch (CurrentInterface)
 			{
-				case pc.EBuilderInterfaceType.BUILD_0:
-					handleInterface0(pc, speedFactor);
+				case EBuilderInterfaceType.BUILD_0:
+					handleInterface0(speedFactor);
 					break;
-				case pc.EBuilderInterfaceType.BUILD_1:
-					handleInterface1(cube, speedFactor);
+				case EBuilderInterfaceType.BUILD_1:
+					handleInterface1(speedFactor);
+					break;
+				case EBuilderInterfaceType.BUILD_2:
+					handleInterface2(speedFactor);
+					break;
+				case EBuilderInterfaceType.BUILD_3:
+					handleInterface3(speedFactor);
+					break;
+				case EBuilderInterfaceType.BUILD_4:
+					handleInterface4(speedFactor);
+					break;
+				case EBuilderInterfaceType.BUILD_5:
+					handleInterface5(speedFactor);
 					break;
 			}
 		}
 	}
-
-	super.PlayerInput(DeltaTime);
 }
 
-function adjustCubeSpeed(MyPlayerController pc)
+function adjustCubeSpeed()
 {
 	if (PressedKeys.Find('Add') >= 0)
 	{
-		pc.cubeSpeedFactor += 0.5;
-		Debug("cubeSpeedFactor: "$pc.cubeSpeedFactor);
+		cubeSpeedFactor += 0.5;
+		Debug("cubeSpeedFactor: "$cubeSpeedFactor);
 	}
 	if (PressedKeys.Find('Subtract') >= 0)
 	{
-		pc.cubeSpeedFactor -= 0.5;
-		Debug("cubeSpeedFactor: "$pc.cubeSpeedFactor);
+		cubeSpeedFactor -= 0.5;
+		Debug("cubeSpeedFactor: "$cubeSpeedFactor);
 	}	
 }
 
-function changeInterface(MyPlayerController pc)
+function changeInterface()
 {
-	local EBuilderInterfaceType currentInterface;
-	currentInterface = pc.CurrentInterface;
-
 	if (PressedKeys.Find('F1') >= 0)
 	{
-		if (currentInterface != 0)
+		if (CurrentInterface != EBuilderInterfaceType.BUILD_0)
 		{
-			pc.CurrentInterface = 0;
-			Debug("CurrentInterface: "$pc.CurrentInterface);
+			CurrentInterface = EBuilderInterfaceType.BUILD_0;
+			Debug("CurrentInterface: "$CurrentInterface);
 		}
 	}
 	else if (PressedKeys.Find('F2') >= 0)
 	{
-		if (currentInterface != 1)
+		if (CurrentInterface != EBuilderInterfaceType.BUILD_1)
 		{
-			pc.CurrentInterface = 1;
-			Debug("CurrentInterface: "$pc.CurrentInterface);
+			CurrentInterface = EBuilderInterfaceType.BUILD_1;
+			Debug("CurrentInterface: "$CurrentInterface);
 		}
 	}
 	else if (PressedKeys.Find('F3') >= 0)
 	{
-		if (currentInterface != 2)
+		if (CurrentInterface != EBuilderInterfaceType.BUILD_2)
 		{
-			pc.CurrentInterface = 2;
-			Debug("CurrentInterface: "$pc.CurrentInterface);
+			CurrentInterface = EBuilderInterfaceType.BUILD_2;
+			Debug("CurrentInterface: "$CurrentInterface);
+		}
+	}
+	else if (PressedKeys.Find('F4') >= 0)
+	{
+		if (CurrentInterface != EBuilderInterfaceType.BUILD_3)
+		{
+			CurrentInterface = EBuilderInterfaceType.BUILD_3;
+			Debug("CurrentInterface: "$CurrentInterface);
+		}
+	}
+	else if (PressedKeys.Find('F5') >= 0)
+	{
+		if (CurrentInterface != EBuilderInterfaceType.BUILD_4)
+		{
+			CurrentInterface = EBuilderInterfaceType.BUILD_4;
+			Debug("CurrentInterface: "$CurrentInterface);
+		}
+	}
+	else if (PressedKeys.Find('F6') >= 0)
+	{
+		if (CurrentInterface != EBuilderInterfaceType.BUILD_5)
+		{
+			CurrentInterface = EBuilderInterfaceType.BUILD_5;
+			Debug("CurrentInterface: "$CurrentInterface);
 		}
 	}
 }
 
-function handleInterface0(MyPlayerController pc, float speedFactor)
+function handleInterface0(float speedFactor)
 {
-	local rotator cubeRotation;
-	local MyCube cube;
-	cube = pc.CurrentCube;
-
-	if (PressedKeys.Find('Up') >= 0)
-	{
-		Debug("Up");
-		cubeRotation.Pitch -= speedFactor * DegToUnrRot;
-	}
-	if (PressedKeys.Find('Down') >= 0)
-	{
-		Debug("Down");
-		cubeRotation.Pitch += speedFactor * DegToUnrRot;
-	}
-	if (PressedKeys.Find('Right') >= 0)
-	{
-		Debug("Right");
-		cubeRotation.Roll += speedFactor * DegToUnrRot;
-	}
-	if (PressedKeys.Find('Left') >= 0)
-	{
-		Debug("Left");
-		cubeRotation.Roll -= speedFactor * DegToUnrRot;
-	}
-
-	cube.cubeRotModifier = cubeRotation;	
+	ArrowKeysToPitchRoll(speedFactor);
+	CurrentCube.cubePosModifier.x = 10;
 }
 
-function handleInterface1(MyCube cube, float speedFactor)
+function handleInterface1(float speedFactor)
 {
 	local vector cubePosition;
-	local rotator cubeRotation;
 
 	if (PressedKeys.Find('W') >= 0)
 	{
@@ -144,11 +159,41 @@ function handleInterface1(MyCube cube, float speedFactor)
 		Debug("D");
 	}
 
-	if (IsZero(cubePosition))
-	{
-		cubePosition.x += 0.0001;
-	}
-	cube.cubePosModifier = cubePosition;
+	CurrentCube.cubePosModifier = cubePosition;
+
+	ArrowKeysToPitchRoll(speedFactor);
+}
+
+function handleInterface2(float speedFactor)
+{
+	local vector transformedMouse;
+	transformedMouse.x = 0.0;
+	transformedMouse.y = mouseX;
+	transformedMouse.z = mouseY;
+
+	CurrentCube.cubePosModifier = transformedMouse;
+
+	ArrowKeysToPitchRoll(speedFactor);
+}
+
+function handleInterface3(float speedFactor)
+{
+
+}
+
+function handleInterface4(float speedFactor)
+{
+
+}
+
+function handleInterface5(float speedFactor)
+{
+
+}
+
+function ArrowKeysToPitchRoll(float speedFactor)
+{
+	local rotator cubeRotation;
 
 	if (PressedKeys.Find('Up') >= 0)
 	{
@@ -171,5 +216,10 @@ function handleInterface1(MyCube cube, float speedFactor)
 		cubeRotation.Roll -= speedFactor * DegToUnrRot;
 	}
 
-	cube.cubeRotModifier = cubeRotation;
+	CurrentCube.cubeRotModifier = cubeRotation;
+}
+
+DefaultProperties
+{
+	OnReceivedNativeInputAxis=InputAxis
 }

@@ -44,5 +44,5 @@ defaultproperties
 {
 	max_force=20000.0
 	max_speed=10.0
-	slow_radius=1000.0
+	slow_radius=10000.0
 }

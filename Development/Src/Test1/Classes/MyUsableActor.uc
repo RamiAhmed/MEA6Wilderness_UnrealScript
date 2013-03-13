@@ -1,6 +1,7 @@
 class MyUsableActor extends Trigger Placeable;
 
 //var() const string Prompt;
+//var() StaticMeshComponent MyMesh;
 var bool IsInInteractionRange;
 
 event Touch(Actor Other, PrimitiveComponent OtherComp, Vector HitLocation, Vector HitNormal)
@@ -25,20 +26,7 @@ event UnTouch(Actor Other)
 		IsInInteractionRange = false;
 	}
 }
-/*
-simulated event PostRenderFor(PlayerController PC, Canvas Canvas, Vector CameraPosition, Vector CameraDir)
-{
-	local Font previous_font;
-	super.PostRenderFor(PC, Canvas, CameraPosition, CameraDir);
-	previous_font = Canvas.Font;
 
-	Canvas.Font = class'Engine'.Static.GetMediumFont();
-	Canvas.SetPos(400, 300);
-	Canvas.SetDrawColor(0, 255, 0, 255);
-	Canvas.DrawText(Prompt); // Prompt is a string variable defined in our new actor's class.
-	Canvas.Font = previous_font;
-}
-*/
 function bool UsedBy(Pawn User) 
 {
 	local bool used;
@@ -72,14 +60,31 @@ DefaultProperties
 	End Object
 
 	Begin Object Class=StaticMeshComponent Name=MyMesh
-		StaticMesh=StaticMesh'NodeBuddies.3D_Icons.NodeBuddy__BASE_SHORT'
+		CastShadow=true
+		bUsePrecomputedShadows=true
+		StaticMesh=StaticMesh'cubePackage.96x96boxWithX3ZeroCenter'
 	End Object
 
-	CollisionComponent=MyMesh
+	Begin Object Class=DynamicLightEnvironmentComponent Name=LightEnvironmentComp
+	    bEnabled=true
+	    bDynamic=true
+	End Object    
 
+	Begin Object Name=CollisionCylinder
+	    CollisionRadius=80.0
+	    CollisionHeight=60.000000
+	    CollideActors=true
+	End Object
+	
+	CollisionComponent=CollisionCylinder
+
+	Components.Add(CollisionCylinder)
+	Components.Add(LightEnvironmentComp)
 	Components.Add(Sprite)
 	Components.Add(myMesh)
+
 	BlockRigidBody=true
+	bCollideActors=true
 	bBlockActors=true
 	bCollideWorld=true
 	bHidden=false
