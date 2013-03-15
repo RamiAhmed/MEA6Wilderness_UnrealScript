@@ -6,6 +6,7 @@ function DrawHUD()
 {
 	local MyPlayerController player;
 	local Vector2D textPosition;
+	//local string mousePos;
 
 	super.DrawHUD();
 
@@ -20,10 +21,13 @@ function DrawHUD()
 	{
 		DrawTextAt("Not in BuilderMode", textPosition);
 	}
-
+/*
 	textPosition.x = 700;
 	textPosition.y = 50;
-	DrawTextAt("MousePosition: "$player.mouseX$","$player.mouseY, textPosition);
+	mousePos = "MousePosition: "$player.mouseX$;
+	mousePos += ", "$player.mouseY;
+	DrawTextAt(mousePos, textPosition);
+	*/
 }
 
 
